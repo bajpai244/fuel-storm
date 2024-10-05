@@ -1,4 +1,4 @@
-import type { AbstractAddress, Coin, Provider } from "fuels";
+import type { AbstractAddress, BN, Coin, Provider } from "fuels";
 
 export const getAllCoins = async (recipientAddress: string | AbstractAddress,provider: Provider) => {
     const recipientCoins: Coin[] = [];
@@ -26,14 +26,14 @@ export const getAllCoins = async (recipientAddress: string | AbstractAddress,pro
     return recipientCoins;
 }
 
-export const createCoinPairs = (coins: Coin[]) => {
+export const createCoinPairs = (coins: Coin[], gasAmount: BN) => {
     const oneCoins = []
     const gasCoins = []
 
     for (const coin of coins) {
         if (coin.amount.eq(1)) {
             oneCoins.push(coin);
-        } else {
+        } else if (coin.amount.gte(gasAmount)) {
             gasCoins.push(coin);
         }
     }

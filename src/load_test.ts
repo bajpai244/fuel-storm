@@ -39,7 +39,7 @@ const main = async () => {
 	const wallet = Wallet.fromPrivateKey(PRIVATE_KEY, provider);
 
     const coins = await getAllCoins(wallet.address, provider);
-    const coinPairs = createCoinPairs(coins);
+    const coinPairs = createCoinPairs(coins, gasPrice.mul(gasLimit));
 
     const requests = await Promise.all(coinPairs.map(async ({oneCoin, gasCoin}) => {
 
