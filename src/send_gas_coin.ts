@@ -6,12 +6,14 @@ import {
 	ScriptTransactionRequest,
 	Signer,
 	Wallet,
-	type Coin,
-	type CursorPaginationArgs,
 } from "fuels";
-import { writeFileSync } from "node:fs";
-import { getAllCoins } from "./lib";
 
+// The script does the following:
+// takes a single address, with some high amount of coin input
+// generates 10k unique input coin by a recursive algorithm
+// each iteration of the loop produces 256 output coin
+// the end result is saved in a JSON file, called tx_data.json
+// the json file is an array: [{tx_id: b256, output_idx: number}]
 const main = async () => {
 	// Create a provider.
 	const LOCAL_FUEL_NETWORK = process.env.LOCAL_FUEL_NETWORK_URL;
@@ -33,27 +35,12 @@ const main = async () => {
 
 	const RECIPIENT_ADDRESS = process.env.RECIPIENT_ADDRESS;
 	if (!RECIPIENT_ADDRESS) {
-		console.error(
-			"RECIPIENT_ADDRESS is not defined in the environment variables.",
-		);
+		console.error("RECIPIENT_ADDRESS is not defined in the environment variables.");
 		process.exit(1);
 	}
 
-	const wallet = Wallet.fromPrivateKey(PRIVATE_KEY, provider);
+	
 
-	const walletCoins = (await provider.getCoins(wallet.address)).coins;
-	console.log(
-		"wallet coins: ",
-		walletCoins.map(({ amount }) => {
-			return amount;
-		}),
-	);
-
-	const recipientCoins: Coin[] = await getAllCoins(RECIPIENT_ADDRESS, provider);
-
-	console.log("total recipient coins: ", recipientCoins.length);
-
-    // console.log('recipeint coins', recipientCoins.map(({amount})=> amount));
 };
 
 main();
