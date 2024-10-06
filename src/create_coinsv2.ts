@@ -54,8 +54,14 @@ const main = async () => {
 			);
 		}
 
+		try {
 		senderWallet.sendTransaction(scriptTransaction);
-		await sleep(1);
+		}
+		// TODO nothing
+		catch(err) {
+
+		}
+		// await sleep(1);
 	}
 }
 };

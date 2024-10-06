@@ -35,14 +35,14 @@ const main = async () => {
 
 	const wallets : [{privateKey: string, address: string}] = JSON.parse(readFileSync('wallets.json', "utf-8"));
 
-	// 10 eth
-	const ethAmount = bn("10000000000");
+	// 0.01 eth
+	const ethAmount = bn("10000000");
 
 	for (const recipientWallet of wallets) {
 		try {
 			const transfer = await wallet.transfer(recipientWallet.address, ethAmount, provider.getBaseAssetId());
 			const result = await transfer.wait();
-			console.log(`Funded ${recipientWallet.address} with 10 ETH. Transaction ID: ${result.id}`);
+			console.log(`Funded ${recipientWallet.address} with 0.01 ETH. Transaction ID: ${result.id}`);
 		} catch (error) {
 			console.error(`Failed to fund ${recipientWallet.address}:`, error);
 		}

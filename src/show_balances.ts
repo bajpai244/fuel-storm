@@ -42,13 +42,13 @@ const main = async () => {
 
 	const wallet = Wallet.fromPrivateKey(PRIVATE_KEY, provider);
 
-	const walletCoins = (await provider.getCoins(wallet.address)).coins;
-	console.log(
-		"wallet coins: ",
-		walletCoins.map(({ amount }) => {
-			return amount;
-		}),
-	);
+	// const walletCoins = (await provider.getCoins(wallet.address)).coins;
+	// console.log(
+	// 	"wallet coins: ",
+	// 	walletCoins.map(({ amount }) => {
+	// 		return amount;
+	// 	}),
+	// );
 
 	const recipientCoins: Coin[] = await getAllCoins(RECIPIENT_ADDRESS, provider);
 

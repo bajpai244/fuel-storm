@@ -40,15 +40,16 @@ const main = async () => {
 	const wallet = Wallet.fromPrivateKey(PRIVATE_KEY, provider);
 
     const coins = await getAllCoins(wallet.address, provider);
-    const coinPairs = getMinAmountCoins(coins);
+    const mintAmountCoins = getMinAmountCoins(coins);
 
-    const requests = await Promise.all(coinPairs.map(async (coin) => {
+    const requests = await Promise.all(mintAmountCoins.map(async (coin) => {
 
     let request = new ScriptTransactionRequest({
         script: new Uint8Array(),
         scriptData: new Uint8Array(),
         gasLimit,
-        maxFee: MIN_COIN_AMONT
+        maxFee: MIN_COIN_AMONT,
+        tip: 10
     });
 
     request.addCoinInput(coin);
