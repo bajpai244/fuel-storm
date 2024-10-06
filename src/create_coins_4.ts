@@ -27,9 +27,9 @@ const main = async () => {
 	const provider = await Provider.create(LOCAL_FUEL_NETWORK);
 
 	// Create our wallet (with a private key).
-	const PRIVATE_KEY = process.env.PRIVATE_KEY;
+	const PRIVATE_KEY = process.env.FUNDER_PRIVATE_KEY_4;
 	if (!PRIVATE_KEY) {
-		console.error("PRIVATE_KEY is not defined in the environment variables.");
+		console.error("FUNDER_PRIVATE_KEY_4 is not defined in the environment variables.");
 		process.exit(1);
 	}
 

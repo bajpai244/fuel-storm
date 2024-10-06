@@ -5,7 +5,8 @@ import {
 	ScriptTransactionRequest,
 	Wallet,
 } from "fuels";
-import { createCoinPairs, getAllCoins } from "./lib";
+import { createCoinPairs, getAllCoins, getMinAmountCoins } from "./lib";
+import { MIN_COIN_AMONT } from "./constants";
 
 // The script does the following:
 // takes a single address, with some high amount of coin input
@@ -39,20 +40,18 @@ const main = async () => {
 	const wallet = Wallet.fromPrivateKey(PRIVATE_KEY, provider);
 
     const coins = await getAllCoins(wallet.address, provider);
-    const coinPairs = createCoinPairs(coins, gasPrice.mul(gasLimit));
+    const coinPairs = getMinAmountCoins(coins);
 
-    const requests = await Promise.all(coinPairs.map(async ({oneCoin, gasCoin}) => {
+    const requests = await Promise.all(coinPairs.map(async (coin) => {
 
     let request = new ScriptTransactionRequest({
         script: new Uint8Array(),
         scriptData: new Uint8Array(),
         gasLimit,
-        maxFee: gasPrice.mul(gasLimit)
+        maxFee: MIN_COIN_AMONT
     });
 
-    request.addCoinInput(oneCoin);
-    request.addCoinInput(gasCoin);
-    
+    request.addCoinInput(coin);
 
     request = await wallet.populateTransactionWitnessesSignature(request); 
     return request;

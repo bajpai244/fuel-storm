@@ -1,4 +1,5 @@
 import type { AbstractAddress, BN, Coin, Provider } from "fuels";
+import { MIN_COIN_AMONT } from "./constants";
 
 export const getAllCoins = async (recipientAddress: string | AbstractAddress,provider: Provider) => {
     const recipientCoins: Coin[] = [];
@@ -24,6 +25,12 @@ export const getAllCoins = async (recipientAddress: string | AbstractAddress,pro
 	}
 
     return recipientCoins;
+}
+
+export const getMinAmountCoins = (coins: Coin[]) => {
+    return coins.filter(({amount})=> {
+        return amount.gte(MIN_COIN_AMONT);
+    })
 }
 
 export const createCoinPairs = (coins: Coin[], gasAmount: BN) => {

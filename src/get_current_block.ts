@@ -11,7 +11,6 @@ import {
 } from "fuels";
 import { writeFileSync } from "node:fs";
 import { getAllCoins } from "./lib";
-import { MIN_COIN_AMONT } from "./constants";
 
 const main = async () => {
 	// Create a provider.
@@ -40,28 +39,8 @@ const main = async () => {
 		process.exit(1);
 	}
 
-	const wallet = Wallet.fromPrivateKey(PRIVATE_KEY, provider);
-
-	const walletCoins = (await provider.getCoins(wallet.address)).coins;
-	console.log(
-		"wallet coins: ",
-		walletCoins.map(({ amount }) => {
-			return amount;
-		}),
-	);
-
-	const recipientCoins: Coin[] = await getAllCoins(RECIPIENT_ADDRESS, provider);
-
-	console.log("total recipient coins: ", recipientCoins.length);
-
-    const minAmountCoins = recipientCoins.filter((
-        {amount}
-    ) => {
-        return amount.gte(MIN_COIN_AMONT);
-    })
-    console.log("coins with MIN_COIN_AMOUNT", minAmountCoins.length);
-
-    // console.log('recipeint coins', recipientCoins.map(({amount})=> amount));
+    const block = await provider.getBlock(13001009 + 6);
+    console.log("current block:", block?.transactionIds.length);
 };
 
 main();
