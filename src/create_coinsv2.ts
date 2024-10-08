@@ -40,7 +40,8 @@ const main = async () => {
 	);
 
 	while (true){
-	for (const wallet of wallets) {
+
+		for (let wallet of wallets) {
 		const senderWallet = Wallet.fromPrivateKey(wallet.privateKey, provider);
 
 		const scriptTransaction = await senderWallet.createTransfer(
@@ -54,16 +55,14 @@ const main = async () => {
 			);
 		}
 
-		try {
-		senderWallet.sendTransaction(scriptTransaction);
-		}
-		// TODO nothing
-		catch(err) {
+		senderWallet.sendTransaction(scriptTransaction).catch((err) =>{
+			console.log('error:', err)
+		} );
 
-		}
 		// await sleep(1);
+		}
+
 	}
-}
 };
 
 main();

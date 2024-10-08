@@ -70,7 +70,7 @@ const main = async () => {
         return wallet.sendTransaction(request)
     })
 
-    await Promise.all(pendingQueries);
+    await Promise.allSettled(pendingQueries);
     console.log('all transactions sent');
 
     const after = new Date();
