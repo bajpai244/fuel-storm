@@ -42,8 +42,8 @@ const main = async () => {
     const coins = await getAllCoins(wallet.address, provider);
     const mintAmountCoins = getMinAmountCoins(coins);
 
-    const requests = await Promise.all(mintAmountCoins.map(async (coin) => {
-
+    const requests = await Promise.allSettled(mintAmountCoins.map(async (coin) => {
+        
     let request = new ScriptTransactionRequest({
         script: new Uint8Array(),
         scriptData: new Uint8Array(),
@@ -66,7 +66,14 @@ const main = async () => {
     const prevBlockNumber = await provider.getBlockNumber();
     console.log('previousBlock:', prevBlockNumber);
 
-    const pendingQueries =  requests.map((request)=> {
+
+    const requestsValue = requests.filter((request)=> {
+        return request.status === "fulfilled" 
+    }).map((request)=> {
+        return request.value;
+    })
+
+    const pendingQueries =  requestsValue.map((request)=> {
         return wallet.sendTransaction(request)
     })
 
