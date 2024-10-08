@@ -77,6 +77,7 @@ const main = async () => {
         return wallet.sendTransaction(request)
     })
 
+    console.log('starting to send transactions');
     await Promise.allSettled(pendingQueries);
     console.log('all transactions sent');
 
