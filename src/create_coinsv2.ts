@@ -27,11 +27,18 @@ const main = async () => {
 		process.exit(1);
 	}
 
-	const RECIPIENT_ADDRESS = process.env.RECIPIENT_ADDRESS;
-	if (!RECIPIENT_ADDRESS) {
-		console.error("RECIPIENT_ADDRESS is not defined in the environment variables.");
+
+	if (!process.env.RECIPIENT_ID) {
+		console.error("RECIPIENT_ID is not defined in the environment variables.");
 		process.exit(1);
 	}
+
+	const RECIPIENT_ID = Number.parseInt(process.env.RECIPIENT_ID);
+	const generatedWallets: { address: string; privateKey: string }[] = JSON.parse(
+		readFileSync("generated_wallets.json", "utf-8")
+	);
+
+	const RECIPIENT_ADDRESS = generatedWallets[RECIPIENT_ID].address;
 
 	const provider = await Provider.create(LOCAL_FUEL_NETWORK);
 

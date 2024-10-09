@@ -7,6 +7,7 @@ import {
 } from "fuels";
 import { createCoinPairs, getAllCoins, getMinAmountCoins } from "./lib";
 import { MIN_COIN_AMONT } from "./constants";
+import {readFileSync} from "node:fs"
 
 // The script does the following:
 // takes a single address, with some high amount of coin input
@@ -26,12 +27,17 @@ const main = async () => {
 
 	const provider = await Provider.create(LOCAL_FUEL_NETWORK);
 
-	// Create our wallet (with a private key).
-	const PRIVATE_KEY = process.env.RECIPIENT_PRIVATE_KEY;
-	if (!PRIVATE_KEY) {
-		console.error("RECIPIENT_PRIVATE_KEY is not defined in the environment variables.");
+    if (!process.env.RECIPIENT_ID) {
+		console.error("RECIPIENT_ID is not defined in the environment variables.");
 		process.exit(1);
 	}
+
+	const RECIPIENT_ID = Number.parseInt(process.env.RECIPIENT_ID);
+	const generatedWallets: { address: string; privateKey: string }[] = JSON.parse(
+		readFileSync("generated_wallets.json", "utf-8")
+	);
+
+	const PRIVATE_KEY = generatedWallets[RECIPIENT_ID].privateKey;
 
     const gasLimit = 100;
     const gasPrice = await provider.getLatestGasPrice();

@@ -9,7 +9,7 @@ import {
 	type Coin,
 	type CursorPaginationArgs,
 } from "fuels";
-import { writeFileSync } from "node:fs";
+import { readFileSync } from "node:fs";
 import { getAllCoins } from "./lib";
 import { MIN_COIN_AMONT } from "./constants";
 
@@ -32,23 +32,17 @@ const main = async () => {
 		process.exit(1);
 	}
 
-	const RECIPIENT_ADDRESS = process.env.RECIPIENT_ADDRESS;
-	if (!RECIPIENT_ADDRESS) {
-		console.error(
-			"RECIPIENT_ADDRESS is not defined in the environment variables.",
-		);
+	if (!process.env.RECIPIENT_ID) {
+		console.error("RECIPIENT_ID is not defined in the environment variables.");
 		process.exit(1);
 	}
 
-	const wallet = Wallet.fromPrivateKey(PRIVATE_KEY, provider);
+	const RECIPIENT_ID = Number.parseInt(process.env.RECIPIENT_ID);
+	const generatedWallets: { address: string; privateKey: string }[] = JSON.parse(
+		readFileSync("generated_wallets.json", "utf-8")
+	);
 
-	// const walletCoins = (await provider.getCoins(wallet.address)).coins;
-	// console.log(
-	// 	"wallet coins: ",
-	// 	walletCoins.map(({ amount }) => {
-	// 		return amount;
-	// 	}),
-	// );
+	const RECIPIENT_ADDRESS = generatedWallets[RECIPIENT_ID].address;
 
 	const recipientCoins: Coin[] = await getAllCoins(RECIPIENT_ADDRESS, provider);
 

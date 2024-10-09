@@ -39,9 +39,9 @@ const main = async () => {
 		process.exit(1);
 	}
 
-    const blockNumber = 12407800;
+    const blockNumber = 12424452;
 
-    for(let i = blockNumber; i < blockNumber + 600; i+=1 ){
+    for(let i = blockNumber; i < blockNumber + 200; i+=1 ){
         const block = await provider.getBlock(i);
 
         console.log(`block number: ${i}, total transactions: ${block?.transactionIds.length}`)

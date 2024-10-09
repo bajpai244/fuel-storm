@@ -176,3 +176,6 @@ dist
 
 # We dump some funding wallets here
 wallets.json
+
+# wallets which can be used load test
+generated_wallets.json
