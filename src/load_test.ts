@@ -141,7 +141,7 @@ const sendWithLimit = async ( requests: ScriptTransactionRequest[],maxConcurrent
 
         // If the number of concurrent promises is at the limit, wait for one to finish
         if (executing.size >= maxConcurrent) {
-            console.log('max concurrent reached, waiting for 1 to be dropped');
+            // console.log('max concurrent reached, waiting for 1 to be dropped');
             await Promise.race(executing);
         }
     }
