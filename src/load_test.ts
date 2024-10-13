@@ -1,13 +1,18 @@
 import {
+    BN,
 	bn,
 	Provider,
 	Script,
 	ScriptTransactionRequest,
 	Wallet,
+    type WalletUnlocked,
+    type Coin,
 } from "fuels";
 import { createCoinPairs, getAllCoins, getMinAmountCoins } from "./lib";
 import { MIN_COIN_AMONT } from "./constants";
 import {readFileSync} from "node:fs"
+
+const gasLimit = 100;
 
 // The script does the following:
 // takes a single address, with some high amount of coin input
@@ -39,7 +44,7 @@ const main = async () => {
 
 	const PRIVATE_KEY = generatedWallets[RECIPIENT_ID].privateKey;
 
-    const gasLimit = 100;
+
     const gasPrice = await provider.getLatestGasPrice();
 
 	const baseAssetID = provider.getBaseAssetId();
@@ -79,12 +84,16 @@ const main = async () => {
         return request.value;
     })
 
-    const pendingQueries =  requestsValue.map((request)=> {
-        return wallet.sendTransaction(request)
-    })
 
     console.log('starting to send transactions');
-    await Promise.allSettled(pendingQueries);
+
+    const maxConcurrentTransactions = 1000;
+    await sendWithLimit(requestsValue, maxConcurrentTransactions, wallet);
+    // const pendingQueries =  requestsValue.map((request)=> {
+    //     return wallet.sendTransaction(request)
+    // })
+
+    // await Promise.allSettled(pendingQueries);
     console.log('all transactions sent');
 
     const after = new Date();
@@ -112,5 +121,33 @@ console.log(`Difference: ${differenceInSeconds} seconds`);
 console.log(`TPS: ${totalTransactions/differenceInSeconds}`)
 
 };
+
+const sendWithLimit = async ( requests: ScriptTransactionRequest[],maxConcurrent: number, wallet: WalletUnlocked)  => {
+    const results = [];
+    const executing = new Set();
+
+    for (const request of requests) {
+        // Create a promise for each coin and add it to the executing set
+        const promise = (async () => {
+            return wallet.sendTransaction(request)
+        })();
+
+        // Add the promise to the execution set and result list
+        results.push(promise);
+        executing.add(promise);
+
+        // Once the promise is resolved, remove it from the execution set
+        promise.then(() => executing.delete(promise));
+
+        // If the number of concurrent promises is at the limit, wait for one to finish
+        if (executing.size >= maxConcurrent) {
+            console.log('max concurrent reached, waiting for 1 to be dropped');
+            await Promise.race(executing);
+        }
+    }
+
+    // Wait for all the promises to finish
+    return Promise.allSettled(results);
+}
 
 main();

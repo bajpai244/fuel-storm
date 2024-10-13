@@ -5,7 +5,7 @@ const main = async ( ) => {
 
   const wallets = [];
 
-  for (let i = 0; i < 3; i++) {
+  for (let i = 0; i < 10; i++) {
     const wallet = Wallet.generate();
 
     wallets.push({
