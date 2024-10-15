@@ -43,7 +43,7 @@ const main = async () => {
 
 	const RECIPIENT_ADDRESS = generatedWallets[RECIPIENT_ID].address;
 
-    const blockNumber = 12831468;
+    const blockNumber = 12906677;
 
     for(let i = blockNumber; i < blockNumber + 200; i+=1 ){
         const block = await provider.getBlock(i);

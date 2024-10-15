@@ -87,13 +87,14 @@ const main = async () => {
 
     console.log('starting to send transactions');
 
-    const maxConcurrentTransactions = 1000;
-    await sendWithLimit(requestsValue, maxConcurrentTransactions, wallet);
-    // const pendingQueries =  requestsValue.map((request)=> {
-    //     return wallet.sendTransaction(request)
-    // })
+    // const maxConcurrentTransactions = 1000;
+    // await sendWithLimit(requestsValue, maxConcurrentTransactions, wallet);
 
-    // await Promise.allSettled(pendingQueries);
+    const pendingQueries =  requestsValue.map((request)=> {
+        return wallet.sendTransaction(request)
+    })
+
+    await Promise.allSettled(pendingQueries);
     console.log('all transactions sent');
 
     const after = new Date();
